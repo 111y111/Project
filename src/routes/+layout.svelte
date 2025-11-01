@@ -5,9 +5,9 @@
 
 <nav class="nav">
   <a href="/">home</a>
-  <a href="/Survey">วิเคราะห์การผลิต</a>
+  <a href="/survey">ประเมิน GAP ด้วยตัวเอง</a>
   <a href="/Status">ติดตามสถานะ</a>
-  <a href="/settings">settings</a>
+  <a href="/settings">ข้อมูลส่วนตัว</a>
 </nav>
 
 

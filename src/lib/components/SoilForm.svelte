@@ -153,7 +153,6 @@
 {/if}
 
 <style>
-  form { max-width: 600px; margin: 20px auto; }
   .card {
     background: #fff;
     border: 1px solid #e5e7eb;

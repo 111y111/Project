@@ -156,3 +156,90 @@
     ✅ ส่งข้อมูลเรียบร้อยแล้ว ขอบคุณค่ะ!
   </div>
 {/if}
+
+<style>
+
+.card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.card label {
+  display: block;
+  margin-top: 6px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.error {
+  color: #b91c1c;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.4);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+}
+
+.modal {
+  background:#fff;
+  border-radius:12px;
+  padding:20px;
+  max-width:500px;
+  width:90%;
+  box-shadow:0 4px 10px rgba(0,0,0,0.25);
+}
+
+.modal h3 {
+  margin-top:0;
+  margin-bottom:10px;
+}
+
+.modal ul {
+  margin:10px 0;
+  padding-left:20px;
+}
+
+.modal-actions {
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:20px;
+}
+
+.modal-actions button.confirm {
+  background:#16a34a;
+  color:white;
+  border:none;
+  padding:6px 12px;
+  border-radius:6px;
+}
+
+.modal-actions button.confirm:hover {
+  background:#15803d;
+}
+
+.success-message {
+  text-align:center;
+  color:#16a34a;
+  font-weight:bold;
+  margin-top:20px;
+  background:#ecfdf5;
+  padding:10px;
+  border-radius:8px;
+}
+</style>
