@@ -2,28 +2,45 @@
   import { goto } from '$app/navigation';
 
   let step = 1;
-  let userType = ''; // เกษตรกร / นิติบุคคล
+  let userType = '';
+  let durianType = '';
 
-  let form = {
+  let registerForm = {
     email: '',
+    password: '',
+    confirmPassword: '',
+    prefix: '',
     firstname: '',
     lastname: '',
     idcard: '',
-    birthday: '',
-    address: '',
-    durianType: '',
+    phone: '',
     durianOther: ''
   };
 
+  let errors = {};
+  const prefixes = ['นาย', 'นาง', 'นางสาว'];
+
+  function validateStep1() {
+    errors = {};
+    if (!userType) errors.userType = "*โปรดเลือกประเภทผู้ใช้งาน";
+    if (!registerForm.email) errors.email = "*โปรดกรอกอีเมล";
+    if (!registerForm.password) errors.password = "*โปรดกรอกรหัสผ่าน";
+    if (registerForm.password !== registerForm.confirmPassword) errors.confirmPassword = "*รหัสผ่านไม่ตรงกัน";
+    if (!registerForm.firstname) errors.firstname = "*โปรดกรอกชื่อ";
+    if (!registerForm.idcard || !/^\d{13}$/.test(registerForm.idcard)) errors.idcard = "*กรุณากรอกเลขบัตร 13 หลัก";
+    if (!registerForm.phone || !/^\d{9,10}$/.test(registerForm.phone)) errors.phone = "*กรุณากรอกเบอร์โทร";
+    return Object.keys(errors).length === 0;
+  }
+
+  function validateStep2() {
+    errors = {};
+    if (!durianType) errors.durianType = "*โปรดเลือกพันธุ์ทุเรียน";
+    if (durianType === 'อื่นๆ' && !registerForm.durianOther.trim()) errors.durianOther = "โปรดระบุพันธุ์อื่นๆ";
+    return Object.keys(errors).length === 0;
+  }
+
   function nextStep() {
-    if (step === 1 && !userType) {
-      alert('กรุณาเลือกประเภทผู้ใช้งานก่อน');
-      return;
-    }
-    if (step === 2 && !form.durianType) {
-      alert('กรุณาเลือกพันธุ์ทุเรียนก่อน');
-      return;
-    }
+    if (step === 1 && !validateStep1()) return;
     step++;
   }
 
@@ -31,97 +48,231 @@
     step--;
   }
 
-  // ✅ เมื่อกดยืนยันครั้งสุดท้ายในหน้าลงทะเบียน
-  function goToProfile() {
-    const data = { userType, ...form };
-    // ส่งข้อมูลไปหน้า profile ผ่าน query string หรือ localStorage
+  function submitForm() {
+    if (!validateStep2()) return;
+    const data = { userType, durianType, ...registerForm };
     localStorage.setItem('registerData', JSON.stringify(data));
     goto('/profile');
   }
 </script>
 
-<section class="register">
-  <h1>ลงทะเบียนเพื่อเข้าร่วมระบบมาตรฐาน GAP</h1>
-  <p class="subtitle">ขั้นตอนที่ {step} จาก 2</p>
+<form class="profile">
+  <h1>ลงทะเบียนบัญชีผู้ใช้</h1>
 
-  <!-- Step 1 -->
   {#if step === 1}
   <div class="card">
     <h2>ข้อมูลส่วนตัว</h2>
-    <p class="label">เลือกประเภทผู้ใช้งาน</p>
 
-    <div class="user-type">
-      <div class="option {userType === 'เกษตรกร' ? 'active' : ''}" on:click={() => (userType = 'เกษตรกร')}>
-        <img src="/images/farmer.png" alt="เกษตรกร" />
-        <span>เกษตรกร</span>
-      </div>
+   <div class="field">
+  <label>ประเภทผู้ใช้</label>
+  {#if errors.userType}<div class="error">{errors.userType}</div>{/if}
+  <div class="user-type">
+    <button 
+      type="button" 
+      class="option {userType==='เกษตรกร'?'active':''}" 
+      on:click={() => userType='เกษตรกร'}>
+      <span>เกษตรกร</span>
+    </button>
 
-      <div class="option {userType === 'นิติบุคคล' ? 'active' : ''}" on:click={() => (userType = 'นิติบุคคล')}>
-        <img src="/images/company.png" alt="นิติบุคคล" />
-        <span>นิติบุคคล</span>
-      </div>
+    <button 
+      type="button" 
+      class="option {userType==='นิติบุคคล'?'active':''}" 
+      on:click={() => userType='นิติบุคคล'}>
+      <span>นิติบุคคล</span>
+    </button>
+  </div>
+</div>
+
+
+    <div class="field">
+      <label>อีเมล</label>
+      {#if errors.email}<div class="error">{errors.email}</div>{/if}
+      <input type="email" bind:value={registerForm.email} />
     </div>
 
-    <div class="form">
-      <label>อีเมล</label>
-      <input type="email" bind:value={form.email} required />
+    <div class="field">
+      <label>รหัสผ่าน</label>
+      {#if errors.password}<div class="error">{errors.password}</div>{/if}
+      <input type="password" bind:value={registerForm.password} />
+    </div>
+
+    <div class="field">
+      <label>ยืนยันรหัสผ่าน</label>
+      {#if errors.confirmPassword}<div class="error">{errors.confirmPassword}</div>{/if}
+      <input type="password" bind:value={registerForm.confirmPassword} />
+    </div>
+
+    <div class="field">
+      <label>คำนำหน้า</label>
+      <select bind:value={registerForm.prefix}>
+        <option value="">-- เลือก --</option>
+        {#each prefixes as p}
+          <option value={p}>{p}</option>
+        {/each}
+      </select>
+    </div>
+
+    <div class="field">
       <label>ชื่อ</label>
-      <input type="text" bind:value={form.firstname} required />
+      {#if errors.firstname}<div class="error">{errors.firstname}</div>{/if}
+      <input type="text" bind:value={registerForm.firstname} />
+    </div>
+
+    <div class="field">
       <label>นามสกุล</label>
-      <input type="text" bind:value={form.lastname} required />
-      <label>เลขบัตรประจำตัวประชาชน</label>
-      <input type="text" maxlength="13" bind:value={form.idcard} required />
-      <label>วันเกิด</label>
-      <input type="date" bind:value={form.birthday} required />
-      <label>ที่อยู่</label>
-      <textarea rows="3" bind:value={form.address}></textarea>
+      <input type="text" bind:value={registerForm.lastname} />
+    </div>
+
+    <div class="field">
+      <label>หมายเลขบัตรประชาชน</label>
+      {#if errors.idcard}<div class="error">{errors.idcard}</div>{/if}
+      <input type="text" maxlength="13" bind:value={registerForm.idcard} />
+    </div>
+
+    <div class="field">
+      <label>เบอร์โทรศัพท์</label>
+      {#if errors.phone}<div class="error">{errors.phone}</div>{/if}
+      <input type="text" bind:value={registerForm.phone} />
     </div>
 
     <div class="btn-group">
-      <button class="btn next" on:click={nextStep}>ถัดไป</button>
+      <button type="button" class="btn next" on:click={nextStep}>ถัดไป</button>
     </div>
   </div>
   {/if}
 
-  <!-- Step 2 -->
   {#if step === 2}
   <div class="card">
-    <h2>เลือกพันธุ์ทุเรียนในแปลง</h2>
-    <div class="durian-list">
-      {#each ['หมอนทอง','ก้านยาว','ชะนี','หลงลับแล','กระดุมทอง','พวงมณี','อื่นๆ'] as type}
-        <label class="radio">
-          <input type="radio" name="durian" value={type} bind:group={form.durianType} />
-          <span>{type}</span>
-        </label>
-      {/each}
-    </div>
+    <h2>ข้อมูลพันธุ์ทุเรียน</h2>
 
-    {#if form.durianType === 'อื่นๆ'}
-    <div class="form">
-      <label>ระบุพันธุ์อื่นๆ</label>
-      <input type="text" bind:value={form.durianOther} placeholder="ระบุชื่อพันธุ์ทุเรียน" />
-    </div>
+    {#each ['หมอนทอง','ก้านยาว','ชะนี','หลงลับแล','กระดุมทอง','พวงมณี','อื่นๆ'] as type}
+      <label class="radio">
+        <input type="radio" bind:group={durianType} value={type} />
+        <span>{type}</span>
+      </label>
+    {/each}
+    {#if errors.durianType}<div class="error">{errors.durianType}</div>{/if}
+
+    {#if durianType==='อื่นๆ'}
+      <div class="field">
+        <label>ระบุพันธุ์อื่นๆ</label>
+        <input type="text" bind:value={registerForm.durianOther} />
+        {#if errors.durianOther}<div class="error">{errors.durianOther}</div>{/if}
+      </div>
     {/if}
 
     <div class="btn-group">
-      <button class="btn back" on:click={prevStep}>ย้อนกลับ</button>
-      <button class="btn submit" on:click={goToProfile}>ยืนยัน</button>
+      <button type="button" class="btn back" on:click={prevStep}>ย้อนกลับ</button>
+      <button type="button" class="btn next" on:click={submitForm}>ยืนยัน</button>
     </div>
   </div>
   {/if}
-</section>
+</form>
 
 <style>
-  .register { max-width: 600px; margin: 0 auto; padding: 24px; font-family: 'Prompt', sans-serif; color: #1f2937; }
-  .card { background: #fff; border-radius: 12px; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1); padding: 20px; }
-  h1 { text-align: center; color: #14532d; }
-  .subtitle { text-align: center; color: #4b5563; margin-bottom: 16px; }
-  .option { border: 2px solid transparent; padding: 8px; border-radius: 10px; cursor: pointer; transition: .2s; }
-  .option.active { border-color: #166534; background-color: #dcfce7; }
-  .form label { display: block; margin-top: 10px; font-weight: 500; }
-  input, textarea { width: 100%; border: 1px solid #d1d5db; border-radius: 8px; padding: 8px; margin-top: 4px; }
-  .btn-group { display: flex; justify-content: space-between; margin-top: 20px; }
-  .btn { background: #166534; color: #fff; padding: 10px 16px; border-radius: 8px; border: none; cursor: pointer; }
-  .btn.back { background: #9ca3af; }
-  .radio { display: flex; align-items: center; gap: 6px; }
+.profile {
+  font-family: 'Prompt', sans-serif;
+  margin: 0 auto;
+}
+
+h1 {
+  color: #010b05;
+  margin-bottom: 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #14532d;
+  margin-bottom: 12px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+label {
+  width: 220px;
+  font-weight: 600;
+  color: #374151;
+}
+
+input, select {
+  flex: 1;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 6px;
+}
+
+button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background-color: #f1f6f3;
+    color: #140e0e;
+    cursor: pointer;
+    font-weight: 600;
+}
+button.next {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #166534;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button.back {
+  background-color: #9ca3af;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.error {
+  color: #b91c1c;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.user-type {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.option {
+  padding: 10px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120px;
+  text-align: center;
+}
+
+
+.option.active {
+  border-color: #18763b;
+  background: #8cb6a1;
+}
+
+
 </style>

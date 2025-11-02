@@ -5,7 +5,7 @@
 <section class="home">
   <!-- ส่วนภาพด้านบน -->
   <div class="hero">
-    <img src="/images/gap-banner.jpg" alt="มาตรฐานการประเมิน GAP" />
+    <img src="/images/durianHome.jpg" alt="" />
     <div class="overlay">
       <h1>ยินดีต้อนรับสู่ระบบประเมิน GAP</h1>
       <p>ติดตามและประเมินมาตรฐานการจัดการเกษตรอย่างมืออาชีพ</p>
