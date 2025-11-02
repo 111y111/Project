@@ -5,11 +5,8 @@
 </script>
 
 <section class="wrap">
-  <!-- Header -->
-  <SurveyHeader 
-    title="สำรวจเพาะปลูก 8 ด้าน" 
-    subtitle="อัปเดตสถานะการประเมินมาตรฐาน GAP" 
-  />
+  <h1>ประเมิน GAP ด้วยตนเอง</h1>
+  <p class="subtitle">แบบสำรวจทั้ง 8 ด้าน</p>
 
   <!-- Grid ของ Survey Items -->
   <section class="grid">
@@ -20,15 +17,12 @@
 </section>
 
 <style>
-  .wrap { 
-    padding: 16px; 
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
+  .wrap { padding: 16px; }
+  h1 { margin: 0 0 6px; }
+  .subtitle { margin: 0 0 14px; color: #666; }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
   }
 </style>
