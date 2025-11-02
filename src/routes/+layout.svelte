@@ -6,8 +6,8 @@
 <nav class="nav">
   <a href="/">home</a>
   <a href="/survey">ประเมิน GAP ด้วยตัวเอง</a>
-  <a href="/Status">ติดตามสถานะ</a>
-  <a href="/settings">ข้อมูลส่วนตัว</a>
+  <a href="/status">สถานะการยื่นคำขอ</a>
+  <a href="/profile">ข้อมูลส่วนตัว</a>
 </nav>
 
 
