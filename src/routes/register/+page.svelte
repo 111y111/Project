@@ -2,10 +2,9 @@
   import { goto } from '$app/navigation';
 
   let step = 1;
-  let userType = '';
-  let durianType = '';
 
   let registerForm = {
+    userType: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -17,18 +16,20 @@
     durianOther: ''
   };
 
+   let durianType = '';
+
   let errors = {};
   const prefixes = ['นาย', 'นาง', 'นางสาว'];
 
   function validateStep1() {
     errors = {};
-    if (!userType) errors.userType = "*โปรดเลือกประเภทผู้ใช้งาน";
+    if (!registerForm.userType) errors.userType = "*โปรดเลือกประเภทผู้ใช้งาน";
     if (!registerForm.email) errors.email = "*โปรดกรอกอีเมล";
     if (!registerForm.password) errors.password = "*โปรดกรอกรหัสผ่าน";
     if (registerForm.password !== registerForm.confirmPassword) errors.confirmPassword = "*รหัสผ่านไม่ตรงกัน";
     if (!registerForm.firstname) errors.firstname = "*โปรดกรอกชื่อ";
     if (!registerForm.idcard || !/^\d{13}$/.test(registerForm.idcard)) errors.idcard = "*กรุณากรอกเลขบัตร 13 หลัก";
-    if (!registerForm.phone || !/^\d{9,10}$/.test(registerForm.phone)) errors.phone = "*กรุณากรอกเบอร์โทร";
+    if (!registerForm.phone || !/^\d{10}$/.test(registerForm.phone)) errors.phone = "*กรุณากรอกเบอร์โทร";
     return Object.keys(errors).length === 0;
   }
 
@@ -50,13 +51,11 @@
 
   function submitForm() {
     if (!validateStep2()) return;
-    const data = { userType, durianType, ...registerForm };
-    localStorage.setItem('registerData', JSON.stringify(data));
     goto('/profile');
   }
 </script>
 
-<form class="profile">
+<form class="register">
   <h1>ลงทะเบียนบัญชีผู้ใช้</h1>
 
   {#if step === 1}
@@ -69,15 +68,15 @@
   <div class="user-type">
     <button 
       type="button" 
-      class="option {userType==='เกษตรกร'?'active':''}" 
-      on:click={() => userType='เกษตรกร'}>
+      class="option {registerForm.userType==='เกษตรกร'?'active':''}" 
+      on:click={() => registerForm.userType='เกษตรกร'}>
       <span>เกษตรกร</span>
     </button>
 
     <button 
       type="button" 
-      class="option {userType==='นิติบุคคล'?'active':''}" 
-      on:click={() => userType='นิติบุคคล'}>
+      class="option {registerForm.userType==='นิติบุคคล'?'active':''}" 
+      on:click={() => registerForm.userType='นิติบุคคล'}>
       <span>นิติบุคคล</span>
     </button>
   </div>
@@ -170,7 +169,7 @@
 </form>
 
 <style>
-.profile {
+.register {
   font-family: 'Prompt', sans-serif;
   margin: 0 auto;
 }
