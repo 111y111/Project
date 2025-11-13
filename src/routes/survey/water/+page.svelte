@@ -49,17 +49,6 @@
 
   }
 
-  function resetForm() {
-    q1 = '';
-    q1Other = '';
-    q2 = '';
-    q3File = null;
-    q3FileName = '';
-    q3Preview = '';
-    q4 = '';
-    submittedData = null;
-    showConfirmModal = false;
-  }
 
 
   function closeModal() {
@@ -101,7 +90,6 @@
     <p>3. อัปโหลดรูปภาพแหล่งน้ำ</p>
     <input type="file" name="q3" accept="image/*" on:change={handleFileChange} required />
     {#if q3Preview}
-      <p>ตัวอย่างภาพ:</p>
       <img src={q3Preview} alt="preview" width="200" style="margin-top:8px; border-radius:6px;" />
     {/if}
   </div>
@@ -128,7 +116,6 @@
         <li><strong>Q1:</strong> {submittedData.q1}</li>
         <li><strong>Q2:</strong> {submittedData.q2}</li>
         <li><strong>Q3:</strong> {submittedData.q3}</li>
-        <strong>ตัวอย่างภาพ:</strong><br/>
           {#if submittedData.q3Preview}
             <img src={submittedData.q3Preview} alt="preview" width="200" style="border-radius:6px; margin-top:8px;" />
           {/if}
